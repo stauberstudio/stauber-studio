@@ -55,6 +55,8 @@ const StauberStudio = () => {
   const [playingAudio, setPlayingAudio] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // Load data from storage on mount
   useEffect(() => {
@@ -90,10 +92,14 @@ const StauberStudio = () => {
     }));
   };
 
-  const handleLogin = async (email, password) => {
-    setIsLoggedIn(true);
-    await saveAuth(true, isSubscribed);
-    setCurrentPage('dashboard');
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    // Simple demo login - accepts any email/password
+    if (email && password) {
+      setIsLoggedIn(true);
+      await saveAuth(true, isSubscribed);
+      setCurrentPage('dashboard');
+    }
   };
 
   const handleSubscribe = async () => {
@@ -133,37 +139,37 @@ const StauberStudio = () => {
   if (currentPage === 'home' && !isLoggedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
           <div className="text-center mb-12 pt-12">
-            <h1 className="text-6xl font-bold text-white mb-4">Stauber Studio</h1>
-            <p className="text-xl text-purple-300 mb-8">Exclusive behind-the-scenes access to the creative process</p>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">Stauber Studio</h1>
+            <p className="text-lg md:text-xl text-purple-300 mb-8">Exclusive behind-the-scenes access to the creative process</p>
             
-            <div className="max-w-2xl mx-auto bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">What You'll Get</h2>
+            <div className="max-w-3xl mx-auto bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-6 md:p-8 mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4">What You'll Get</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 <div className="flex items-start gap-3">
-                  <Music className="text-purple-400 mt-1" size={20} />
+                  <Music className="text-purple-400 mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="text-white font-semibold">Unreleased Demos</h3>
                     <p className="text-gray-400 text-sm">Hear tracks before anyone else</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Volume2 className="text-blue-400 mt-1" size={20} />
+                  <Volume2 className="text-blue-400 mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="text-white font-semibold">Voice Memos</h3>
                     <p className="text-gray-400 text-sm">Raw ideas & inspiration</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Image className="text-pink-400 mt-1" size={20} />
+                  <Image className="text-pink-400 mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="text-white font-semibold">Moodboards</h3>
                     <p className="text-gray-400 text-sm">Visual inspiration & artwork</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Archive className="text-green-400 mt-1" size={20} />
+                  <Archive className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="text-white font-semibold">Vault Drops</h3>
                     <p className="text-gray-400 text-sm">Collections of rare clips</p>
@@ -201,28 +207,37 @@ const StauberStudio = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900 flex items-center justify-center px-4">
         <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 max-w-md w-full">
           <h2 className="text-3xl font-bold text-white mb-6 text-center">Welcome Back</h2>
-          <div className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
             <button
-              onClick={() => handleLogin('demo@email.com', 'password')}
+              type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-bold hover:opacity-90 transition"
             >
               Sign In
             </button>
-          </div>
+          </form>
           <p className="text-center text-gray-400 mt-4">
             <button onClick={() => setCurrentPage('home')} className="text-purple-400 hover:text-purple-300">
               Back to Home
             </button>
+          </p>
+          <p className="text-center text-gray-500 text-sm mt-4">
+            Demo: Enter any email and password to continue
           </p>
         </div>
       </div>
@@ -261,36 +276,36 @@ const StauberStudio = () => {
   // Navigation Component
   const Navigation = () => (
     <nav className="bg-black bg-opacity-50 backdrop-blur-sm border-b border-purple-900">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Stauber Studio</h1>
-          <div className="flex gap-4">
+      <div className="container mx-auto px-4 py-4 max-w-6xl">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <h1 className="text-xl md:text-2xl font-bold text-white">Stauber Studio</h1>
+          <div className="flex gap-2 md:gap-4">
             <button
               onClick={() => setCurrentPage('dashboard')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg transition text-sm md:text-base ${
                 currentPage === 'dashboard' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'
               }`}
             >
               <Home size={18} />
-              Dashboard
+              <span className="hidden sm:inline">Dashboard</span>
             </button>
             <button
               onClick={() => setCurrentPage('archive')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg transition text-sm md:text-base ${
                 currentPage === 'archive' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'
               }`}
             >
               <Archive size={18} />
-              Archive
+              <span className="hidden sm:inline">Archive</span>
             </button>
             <button
               onClick={() => setCurrentPage('account')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg transition text-sm md:text-base ${
                 currentPage === 'account' ? 'bg-purple-600 text-white' : 'text-gray-300 hover:text-white'
               }`}
             >
               <User size={18} />
-              Account
+              <span className="hidden sm:inline">Account</span>
             </button>
           </div>
         </div>
@@ -345,11 +360,11 @@ const StauberStudio = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
            onClick={() => setSelectedPost(null)}>
-        <div className="bg-gradient-to-br from-gray-900 to-black rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8"
+        <div className="bg-gradient-to-br from-gray-900 to-black rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8"
              onClick={e => e.stopPropagation()}>
           <div className="flex justify-between items-start mb-6">
-            <h2 className="text-3xl font-bold text-white">{selectedPost.title}</h2>
-            <button onClick={() => setSelectedPost(null)} className="text-gray-400 hover:text-white text-2xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-white pr-4">{selectedPost.title}</h2>
+            <button onClick={() => setSelectedPost(null)} className="text-gray-400 hover:text-white text-2xl flex-shrink-0">
               ×
             </button>
           </div>
@@ -359,7 +374,7 @@ const StauberStudio = () => {
           {(selectedPost.audioUrl || selectedPost.type === 'vault-drop') && (
             <div className="bg-purple-900 bg-opacity-30 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-3">
-                <button className="bg-purple-600 hover:bg-purple-700 rounded-full p-3 transition">
+                <button className="bg-purple-600 hover:bg-purple-700 rounded-full p-3 transition flex-shrink-0">
                   {playingAudio === selectedPost.id ? <Pause size={24} /> : <Play size={24} />}
                 </button>
                 <div className="flex-1">
@@ -367,7 +382,7 @@ const StauberStudio = () => {
                     <div className="bg-purple-400 h-full w-1/3"></div>
                   </div>
                 </div>
-                <span className="text-sm text-gray-400">0:45 / 2:30</span>
+                <span className="text-sm text-gray-400 flex-shrink-0">0:45 / 2:30</span>
               </div>
             </div>
           )}
@@ -377,7 +392,7 @@ const StauberStudio = () => {
               <h3 className="text-lg font-bold text-white mb-3">Clips in this drop:</h3>
               {selectedPost.clips.map((clip, i) => (
                 <div key={i} className="bg-gray-800 rounded p-3 flex items-center justify-between">
-                  <span className="text-gray-300">{clip}</span>
+                  <span className="text-gray-300 text-sm">{clip}</span>
                   <button className="text-purple-400 hover:text-purple-300">
                     <Play size={18} />
                   </button>
@@ -413,8 +428,8 @@ const StauberStudio = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900">
         <Navigation />
-        <div className="container mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold text-white mb-6">Latest Posts</h2>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Latest Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {posts.slice(0, 6).map(post => (
               <PostCard key={post.id} post={post} />
@@ -431,10 +446,10 @@ const StauberStudio = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900">
         <Navigation />
-        <div className="container mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold text-white mb-6">Archive</h2>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Archive</h2>
           
-          <div className="flex gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <input
               type="text"
               placeholder="Search posts..."
@@ -472,8 +487,8 @@ const StauberStudio = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-blue-900">
         <Navigation />
-        <div className="container mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold text-white mb-6">Account</h2>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Account</h2>
           
           <div className="max-w-2xl space-y-6">
             <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-6 border border-purple-900">
@@ -499,7 +514,7 @@ const StauberStudio = () => {
                   <label className="text-gray-400 text-sm">Email</label>
                   <input
                     type="email"
-                    value="demo@email.com"
+                    value={email || "demo@email.com"}
                     disabled
                     className="w-full bg-gray-800 text-gray-500 px-4 py-2 rounded-lg mt-1"
                   />
